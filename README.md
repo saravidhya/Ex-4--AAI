@@ -1,5 +1,5 @@
-## NAME: VIDHIYA LAKSHMI S
-## REGISTER NO.: 212223230238
+<H3>Vidhiya Lakshmi S</H3>
+<H3>212223230238</H3>
 <H3>EX. NO.4</H3>
 <H3>DATE:04-08-2026</H3>
 <H1 ALIGN =CENTER> Implementation of Hidden Markov Model</H1>
@@ -21,61 +21,70 @@ Step 8:Calculate the probability of the observed sequence by summing the last ro
 Step 9:Find the most likely sequence of hidden states by selecting the hidden state with the highest probability at each time step based on the alpha matrix.<br>
 
 ## Program:
-```python
+```
+
+import networkx as nx
 import numpy as np
-#Define the transition matrix
-transition_matrix =np.array([[0.5,0.3,0.2],[0.4,0.2,0.4],[0.0,0.3,0.7]])
-#Define the emission matrix
-emission_matrix =np.array ([[0.1,0.9],[0.4,0.6],[0.8,0.2]])
-#Define the initial probabilities
-initial_probabilities = np.array([0.5,0.1,0.4])
-#Define the observed sequence
-observed_sequence = np.array([1,1,0]) #Sad,Sad,Happy
-
-# Initialize the alpha matrix
-alpha = np. zeros ((len(observed_sequence) ,len (initial_probabilities) ) )
-# Calculate the first row of the alpha matrix
-alpha [0,:] = initial_probabilities *emission_matrix[:, observed_sequence [0]]
-
-# Loop through the rest of the observed sequence and calculate the rest of the alpha matrix
-for t in range (1, len (observed_sequence) ) :
-  for j in range (len (initial_probabilities) ) :
-    alpha[t,j]= emission_matrix [j,observed_sequence[t]] *np.sum(alpha[t-1:]*transition_matrix[:, j])
-
-    # Calculate the probability of the observed sequence
-probability = np.sum(alpha[-1,:])
-# Print the probability of the observed sequence
-print ("The probability of the observed sequence is: " ,probability)
-# Find the most likely sequence of weather states given the observed sequence
-most_likely_sequence=[]
-most_likely_seq=[]
-print(alpha[1,0])
-print(alpha[1,1])
-for t in range (len (observed_sequence)):
-  print(np.argmax(alpha[t,:]))
-  most_likely_seq.append(np.argmax(alpha[t,:]))
-  if most_likely_seq[t] == 0:
-    most_likely_sequence.append ("rainy")
-  elif most_likely_seq[t] == 1:
-    most_likely_sequence.append ("cloudy")
-  else:
-    most_likely_sequence.append ("sunny")
-  '''
-  if alpha [t, 0] > alpha [t,1]:
-    most_likely_sequence.append ("hot")
-  else:
-    most_likely_sequence.append ("cold")
-  '''
-
-  print("The most likely sequence of Weather States is",most_likely_sequence)
-
-
+import matplotlib.pyplot as plt
+G=nx.DiGraph()
+initialprobs=np.array([0.5,0.1,0.4])
+emissionprobs=np.array([[0.9,0.1],[0.4,0.6],[0.3,0.7]])
+transitionprobs=np.array([[0.2,0.4,0.4],[0.1,0.5,0.4],[0,0.3,0.7]])
+observationseq=np.array([0,0,0,1,1])
+observations=[]
+for i in range (len(observationseq)):
+    if observationseq[i]==0:
+        observations.append("Sad \nDay "+str(i))
+    else:
+        observations.append("Happy\nDay "+str(i))
+alpha=np.zeros((len(observationseq),len(initialprobs)))
+print(alpha)
+alpha[0,:]=initialprobs*emissionprobs[:,observationseq[0]]
+print(alpha)
+for i in range(1,len(observationseq)):
+    for j in range(len(initialprobs)):
+        alpha[i,j]=emissionprobs[j,observationseq[i]]*np.sum(alpha[i-1]*transitionprobs[:,j])
+print(alpha)
+stateseq=[]
+for i in range(len(observationseq)):
+    t=np.argmax(alpha[i])
+    if t==0:
+        stateseq.append("Rainy "+str(i))
+    elif t==1:
+        stateseq.append("Cloudy "+str(i))
+    else:
+        stateseq.append("Sunny "+str(i))
+print(stateseq)
+G.add_nodes_from(stateseq)
+edges=[]
+pos={}
+colormap=[]
+s=0
+for x in stateseq:
+    pos[x]=(s,0)
+    s+=2
+    colormap.append("lightblue")
+for i in range(len(stateseq)-1):
+    edges.append((stateseq[i],stateseq[i+1]))
+for i in range(len(stateseq)):
+    edges.append((stateseq[i],observations[i]))
+t=0
+for x in observations:
+    pos[x]=(t,-1)
+    t+=2
+    colormap.append("yellow")
+G.add_edges_from(edges)
+nx.draw(G,pos=pos,with_labels=True,node_size=5000,node_color=colormap)
+plt.show()
 
 
 ```
 
 ## Output:
-<img width="1046" height="238" alt="image" src="https://github.com/user-attachments/assets/f7b30be7-b4ff-4686-9b20-ed0fb56bba20" />
+
+
+<img width="697" height="627" alt="image" src="https://github.com/user-attachments/assets/e1f1dbf5-8530-40b1-a005-9e41e0118f26" />
+
 
 ## Result:
 Thus Hidden Markov Model is implemented using python.
